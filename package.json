@@ -9,6 +9,7 @@
 		"lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix"
 	},
 	"dependencies": {
+		"@internationalized/date": "^3.5.5",
 		"@nextui-org/button": "2.0.37",
 		"@nextui-org/card": "^2.0.33",
 		"@nextui-org/code": "2.0.32",
@@ -24,14 +25,19 @@
 		"@nextui-org/switch": "2.0.33",
 		"@nextui-org/system": "2.2.5",
 		"@nextui-org/theme": "2.2.9",
+		"@react-aria/i18n": "^3.12.1",
 		"@react-aria/ssr": "3.9.4",
 		"@react-aria/visually-hidden": "3.8.12",
+		"@tabler/icons-react": "^3.11.0",
 		"clsx": "2.1.1",
+		"date-fns": "^3.6.0",
 		"framer-motion": "~11.1.1",
 		"intl-messageformat": "^10.5.0",
 		"next": "14.2.4",
 		"next-themes": "^0.2.1",
 		"react": "18.3.1",
+		"react-datepicker": "^7.3.0",
+		"react-day-picker": "^9.0.5",
 		"react-dom": "18.3.1"
 	},
 	"devDependencies": {

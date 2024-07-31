@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
 import { Tabs, Tab, Card, CardBody } from "@nextui-org/react";
-import OpdTest from "@/components/opd-test";
-import ThaiCVRiskForm from "@/components/thai-cv-risk-form";
+import OpdTest from "@/components/form/opd-test";
+import ThaiCVRiskForm from "@/components/form/thai-cv-risk-form";
 
 export default function TestPage() {
   return (

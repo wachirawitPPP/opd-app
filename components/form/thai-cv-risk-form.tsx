@@ -35,7 +35,7 @@ const ThaiCVRiskForm: React.FC = () => {
   };
 
   return (
-    <div className="w-full mx-auto p-8 bg-white shadow-md rounded-lg">
+    <div className="w-full mx-auto p-8  rounded-lg">
       <form onSubmit={handleSubmit}>
         <h3 className="text-xl font-semibold mb-4">ข้อมูลที่จำเป็น (ต้องการทุกช่อง)</h3>
 
