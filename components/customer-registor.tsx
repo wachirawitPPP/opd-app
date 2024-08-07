@@ -270,6 +270,7 @@ const CustomerRegistor: React.FC<CustomerRegistorProps> = ({ customer, cardData,
 
             setForm((prevForm) => ({
                 ...prevForm,
+                prefix:cardData?.th_prefix,
                 id_card: cardData.citizen_code || "",
                 firstname: cardData.th_firstname || "",
                 lastname: cardData.th_lastname || "",
@@ -326,7 +327,7 @@ const CustomerRegistor: React.FC<CustomerRegistorProps> = ({ customer, cardData,
             nation: formData.get("nation"),
             nation_origin: formData.get("nation_origin"),
             prefix: formData.get('prefix'),
-            sex: formData.get('sex'),
+            gender: formData.get('sex'),
             birthdate: formData.get('birthdate'),
             firstname_th: formData.get("firstname"),
             lastname_th: formData.get("lastname"),
@@ -620,7 +621,7 @@ const CustomerRegistor: React.FC<CustomerRegistorProps> = ({ customer, cardData,
                     <SelectItem key="ไม่ระบุ">ไม่ระบุ</SelectItem>
                     <SelectItem key="นาย">นาย</SelectItem>
                     <SelectItem key="นาง">นาง</SelectItem>
-                    <SelectItem key="นางสาว">นางสาว</SelectItem>
+                    <SelectItem key="น.ส.">นางสาว</SelectItem>
                     <SelectItem key="เด็กชาย">เด็กชาย</SelectItem>
                     <SelectItem key="เด็กหญิง">เด็กหญิง</SelectItem>
 

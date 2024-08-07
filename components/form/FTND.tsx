@@ -78,7 +78,7 @@ const FTND: React.FC<HSIProps> = ({ customer }) => {
             total_score_detail = "ติดนิโคตินระดับต่ำ";
         } else if (total_score <= 4) {
             total_score_detail = "ติดนิโคตินระดับปานกลาง";
-        } else if (total_score <= 6) {
+        } else if (total_score >= 6) {
             total_score_detail = "ติดนิโคตินระดับสูง";
         }
 
