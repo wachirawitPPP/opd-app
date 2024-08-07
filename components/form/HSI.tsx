@@ -92,16 +92,16 @@ const HSI: React.FC<HSIProps> = ({ customer }) => {
 
         console.log("Data to submit:", data);
 
-        // try {
-        //     const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/create_assment`, data);
-        //     console.log("Response:", response.data);
-        //     toast.success("บันทึกข้อมูลสำเร็จ")
-        //     // Handle successful response
-        // } catch (error) {
-        //     console.error("Error submitting form", error);
-        //     toast.error("ไม่สามารถบันทึกข้อมูลได้ ลองใหม่อีกครั้ง")
-        //     // Handle error response
-        // }
+        try {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/create_assment`, data);
+            console.log("Response:", response.data);
+            toast.success("บันทึกข้อมูลสำเร็จ")
+            // Handle successful response
+        } catch (error) {
+            console.error("Error submitting form", error);
+            toast.error("ไม่สามารถบันทึกข้อมูลได้ ลองใหม่อีกครั้ง")
+            // Handle error response
+        }
     };
 
     return (
