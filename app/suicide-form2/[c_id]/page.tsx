@@ -46,7 +46,7 @@ export default function DepressionTestPage() {
             <p>อายุ: {customer?.age}</p>
           </div>
         </div>
-        <SuicideForm2 />
+        <SuicideForm2 customer={customer} />
 
       </Card>
     </div>

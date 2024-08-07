@@ -10,7 +10,7 @@ const SuicideForm = (customer: any) => {
   const [formData, setFormData] = useState({})
   const [questions, setQuestions] = useState<any[]>([]);
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
-
+  const [customerID, setCustomerID] = useState<any | null>('')
   const initialForm = {
     suicide1: 0,
     suicide2: 0,
@@ -25,6 +25,7 @@ const SuicideForm = (customer: any) => {
   useEffect(() => {
     if (customer) {
       setFormData(customer)
+      setCustomerID(customer.customer)
     }
 
     // Fetch questions from the API
@@ -83,7 +84,7 @@ const SuicideForm = (customer: any) => {
   const handleNextQuestion = async () => {
     console.log("test", totalScoreDetail)
     const data = {
-      customer_id: 1,
+      customer_id: customerID.id,
       question_type_id: 2,
       assmt_status: 1,
       total_score: totalScore,

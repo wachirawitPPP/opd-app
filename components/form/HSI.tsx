@@ -84,7 +84,7 @@ const HSI: React.FC<HSIProps> = ({ customer }) => {
 
         const data = {
             customer_id: customer?.id || 0,
-            question_type_id: 4,
+            question_type_id: 5,
             assmt_status: 1,
             total_score,
             total_score_detail

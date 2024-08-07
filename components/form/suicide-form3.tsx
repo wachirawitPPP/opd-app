@@ -67,7 +67,7 @@ const SuicideForm = (customer: any)  => {
     console.log("test", totalScoreDetail) 
     const data = {
       customer_id: customerID.id,
-      question_type_id: 3,
+      question_type_id: 4,
       assmt_status: 1,
       total_score: totalScore,
       total_score_detail: totalScoreDetail

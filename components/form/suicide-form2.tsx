@@ -33,6 +33,7 @@ const SuicideForm = (customer: any) => {
     useEffect(() => {
         if (customer) {
             setFormData(customer)
+            setCustomerID(customer.customer)
         }
 
         // Fetch questions from the API
@@ -53,7 +54,7 @@ const SuicideForm = (customer: any) => {
     const [totalScore, setTotalScore] = useState<number | null>(null);
     const [isShowbtn, setIsShowbtn] = useState(false);
     const [totalScoreDetail, setTotalScoreDetail] = useState('');
-
+    const [customerID, setCustomerID] = useState<any | null>('')
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData(event.target as HTMLFormElement);
@@ -104,7 +105,7 @@ const SuicideForm = (customer: any) => {
     const handleNextQuestion = async () => {
         console.log("test", totalScoreDetail)
         const data = {
-            customer_id: 1,
+            customer_id: customerID.id,
             question_type_id: 3,
             assmt_status: 1,
             total_score: totalScore,
@@ -115,12 +116,10 @@ const SuicideForm = (customer: any) => {
         await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/create_assment`, data).then((response) => {
             console.log(response)
             if (response.status === 200) {
-                window.location.href = "/suicide-form3"
+                window.location.href = `/suicide-form3/${customer.customer.id_card}`
             }
         });
-    }
-
-    const { isOpen, onOpen, onOpenChange } = useDisclosure();
+    } 
 
     return (
         <div className='w-full p-5'>
