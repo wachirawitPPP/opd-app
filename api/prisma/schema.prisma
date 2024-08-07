@@ -1,0 +1,159 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Assessments {
+  assessment_id      Int             @id @default(autoincrement())
+  customer_id        Int?
+  date               DateTime?       @db.Date
+  question_type_id   Int?
+  assmt_status       Int?            @default(0) @db.TinyInt
+  total_score        Int?
+  total_score_detail String?         @db.Text
+  suggestion         String?         @db.Text
+  Customers          Customers?      @relation(fields: [customer_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Assessments_ibfk_1")
+  Questions_type     Questions_type? @relation(fields: [question_type_id], references: [question_type_id], onDelete: Restrict, onUpdate: Restrict, map: "question_type_fk")
+  Responses          Responses[]
+
+  @@index([customer_id], map: "user_id")
+  @@index([question_type_id], map: "question_type_fk")
+}
+
+model Questions {
+  question_id      Int             @id @default(autoincrement())
+  question_text    String?         @db.Text
+  question_type_id Int?
+  Questions_type   Questions_type? @relation(fields: [question_type_id], references: [question_type_id], onDelete: NoAction, onUpdate: NoAction, map: "Questions_ibfk_1")
+  Responses        Responses[]
+
+  @@index([question_type_id], map: "question_type_id")
+}
+
+model Questions_type {
+  question_type_id   Int           @id @default(autoincrement())
+  question_type_name String?       @db.VarChar(255)
+  Assessments        Assessments[]
+  Questions          Questions[]
+  Responses          Responses[]
+}
+
+model Responses {
+  response_id      Int             @id @default(autoincrement())
+  assessment_id    Int?
+  question_id      Int?
+  question_type_id Int?
+  score            Int?
+  Assessments      Assessments?    @relation(fields: [assessment_id], references: [assessment_id], onDelete: NoAction, onUpdate: NoAction, map: "Responses_ibfk_1")
+  Questions        Questions?      @relation(fields: [question_id], references: [question_id], onDelete: NoAction, onUpdate: NoAction, map: "Responses_ibfk_2")
+  Questions_type   Questions_type? @relation(fields: [question_type_id], references: [question_type_id], onDelete: NoAction, onUpdate: NoAction, map: "Responses_ibfk_3")
+
+  @@index([assessment_id], map: "assessment_id")
+  @@index([question_id], map: "question_id")
+  @@index([question_type_id], map: "question_type_id")
+}
+
+model ScoringInterpretation {
+  score_range_id Int     @id @default(autoincrement())
+  min_score      Int?
+  max_score      Int?
+  interpretation String? @db.VarChar(100)
+  advice         String? @db.Text
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  name      String?
+  role      String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model Customers {
+  id                      Int                   @id @default(autoincrement())
+  station_code            String?               @db.VarChar(255)
+  station_name            String?               @db.VarChar(255)
+  prefix                  String?               @db.VarChar(255)
+  name                    String?               @db.VarChar(100)
+  age                     String?               @db.VarChar(50)
+  register_date           DateTime?             @db.Date
+  birthdate               String?               @db.VarChar(50)
+  gender                  String?               @db.VarChar(10)
+  contact_info            String?               @db.VarChar(255)
+  contact_line            String?               @db.VarChar(255)
+  tel                     String?               @db.VarChar(100)
+  firstname               String?               @db.VarChar(100)
+  lastname                String?               @db.VarChar(100)
+  firstname_en            String?               @db.VarChar(100)
+  lastname_en             String?               @db.VarChar(100)
+  id_card                 String?               @db.VarChar(50)
+  passport_id             String?               @db.VarChar(50)
+  nation                  String?               @db.VarChar(100)
+  religion                String?               @db.VarChar(100)
+  religion_other          String?               @db.VarChar(100)
+  nation_origin           String?               @db.VarChar(100)
+  edu_level               String?               @db.VarChar(100)
+  marital_status          String?               @db.VarChar(100)
+  occupation              String?               @db.VarChar(100)
+  personal_status_address String?               @db.VarChar(100)
+  community_status        Json?
+  special_rights          String?               @db.VarChar(100)
+  special_rights_other    String?               @db.VarChar(100)
+  treatment_rights        String?               @db.VarChar(100)
+  treatment_rights_other  String?               @db.VarChar(100)
+  selfcare                Json?
+  disease                 Json?
+  allergic                Json?
+  allergic_detail         String?               @db.VarChar(100)
+  isallergic              Int?                  @default(1) @db.TinyInt
+  food_allergic           Json?
+  food_allergic_detail    String?               @db.VarChar(100)
+  isfood_allergic         Int?                  @default(1) @db.TinyInt
+  family_history          Json?
+  weight                  Decimal?              @default(0.00) @db.Decimal(10, 2)
+  height                  Decimal?              @default(0.00) @db.Decimal(10, 2)
+  waistline               Decimal?              @default(0.00) @db.Decimal(10, 2)
+  bp                      String?               @db.VarChar(45)
+  bmi                     Decimal?              @db.Decimal(10, 2)
+  weight_age              String?               @db.VarChar(50)
+  height_age              String?               @db.VarChar(50)
+  weight_height           String?               @db.VarChar(50)
+  risk_summary            Json?
+  health_summary          String?               @db.VarChar(100)
+  createdate              DateTime?             @default(now()) @db.DateTime(0)
+  updatedate              DateTime?             @default(now()) @db.DateTime(0)
+  photo                   String?               @db.LongText
+  Assessments             Assessments[]
+  Customer_com_status     Customer_com_status[]
+}
+
+model Community_status {
+  id                  Int                   @id
+  community_name      String?               @db.VarChar(255)
+  createdate          DateTime?             @default(now()) @db.DateTime(0)
+  update              DateTime?             @default(now()) @db.DateTime(0)
+  isActive            Boolean?              @default(true)
+  Customer_com_status Customer_com_status[]
+}
+
+model Customer_com_status {
+  id                  Int               @id
+  customer_id         Int?
+  community_status_id Int?
+  createdate          DateTime?         @default(now()) @db.DateTime(0)
+  updatedate          DateTime?         @default(now()) @db.DateTime(0)
+  isActive            Boolean?          @default(true)
+  Customers           Customers?        @relation(fields: [customer_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_community_customer")
+  Community_status    Community_status? @relation(fields: [community_status_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_community_status")
+
+  @@index([customer_id], map: "fk_community_customer")
+  @@index([community_status_id], map: "fk_community_status")
+}

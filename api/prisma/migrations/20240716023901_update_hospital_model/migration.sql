@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `Hospital` MODIFY `tambonId` INTEGER NOT NULL DEFAULT 100101;

@@ -1,0 +1,7 @@
+-- DropForeignKey
+ALTER TABLE `User` DROP FOREIGN KEY `User_hospitalId_fkey`;
+
+-- AlterTable
+ALTER TABLE `User` ADD COLUMN `email` VARCHAR(191) NOT NULL DEFAULT '',
+    ADD COLUMN `image` VARCHAR(191) NOT NULL DEFAULT '',
+    ADD COLUMN `name` VARCHAR(191) NOT NULL DEFAULT '';
