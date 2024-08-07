@@ -49,15 +49,18 @@ export default function DepressionTestPage() {
                 if (response.data.message == 'User found successfully') {
                     setCustomer(response.data.data)
                     axios.get(`${process.env.NEXT_PUBLIC_API_URL}/assment_summary/${response.data.data.id}`).then((response) => {
-                        console.log("dataresponse", response.data.data) 
+                        console.log("dataresponse", response.data.data)
                         const sortDataById = response.data.data.sort((a: any, b: any) => a.question_type_id - b.question_type_id);
                         console.log(sortDataById)
                         setAsmtsummary(sortDataById)
-                        const date = (response.data.data[0].date).substring(0, 10)
-                        setAsmtdate(date)
+                        if (response.data.data.length > 0) {
+                            const date = (response.data.data[0].date).substring(0, 10)
+                            setAsmtdate(date)
+                        } 
+                        console.log("response.data", response.data.data.length)
                         setError(false)
                         setErrorMessage("")
-                    })
+                    }) 
                 } else {
                     setError(true)
                     setErrorMessage("ไม่พบข้อมูลของหมายเลขบัตรประชาชานี้!")
