@@ -10,11 +10,19 @@ interface FormData {
     gender: string;
     bmi: string;
     bp: string;
-    diabetes_score:number
-    diabetes_score_details:string
+    diabetes_score: number;
+    diabetes_score_details: string;
+    diabetes_score_suggestion: string;
     family_history: string;
     waistline: string;
-  }
+    smoking: boolean;
+    diabetes: boolean;
+    cholesterol: number | null;
+    height: string;
+    heart_score: number;
+    heart_score_detail: string;
+    heart_score_suggestion: string;
+}
 
 const scoreClassName   = (score: number) => {
     if (score <= 2) return "text-green-500";
@@ -78,22 +86,37 @@ const DiabetesForm: React.FC<DiabetesFormProps> = ({ formData, setFormData, onSu
 
     const getRiskDescription = (score: number): string => {
         if (score >= 0 && score <= 2) {
-            return "ความเสี่ยงต่ำ, โอกาสเกิดเบาหวาน 1/20\nคำแนะนำ: ออกกำลังกายสม่ำเสมอ, ควบคุมน้ำหนักให้อยู่ในเกณฑ์ที่เหมาะสม";
+            return "ความเสี่ยงต่ำ, โอกาสเกิดเบาหวาน 1/20";
         } else if (score >= 3 && score <= 5) {
-            return "ความเสี่ยงปานกลาง, โอกาสเกิดเบาหวาน 1/12\nคำแนะนำ: ออกกำลังกายสม่ำเสมอ, ควบคุมน้ำหนักให้อยู่ในเกณฑ์ที่เหมาะสม, ตรวจความดันโลหิต, ตรวจระดับน้ำตาลในเลือด, ควรประเมินความเสี่ยงซ้ำทุก 1-3 ปี";
+            return "ความเสี่ยงปานกลาง, โอกาสเกิดเบาหวาน 1/12";
         } else if (score >= 6 && score <= 8) {
-            return "ความเสี่ยงสูง, โอกาสเกิดเบาหวาน 1/17\nคำแนะนำ: ควบคุมอาหารและออกกำลังกายสม่ำเสมอ, ควบคุมน้ำหนักให้อยู่ในเกณฑ์ที่เหมาะสม, ตรวจความดันโลหิต, ตรวจระดับน้ำตาลในเลือด, ควรประเมินความเสี่ยงซ้ำทุก 1-3 ปี";
+            return "ความเสี่ยงสูง, โอกาสเกิดเบาหวาน 1/17";
         } else if (score > 8) {
-            return "ความเสี่ยงสูงมาก, โอกาสเกิดเบาหวาน 1/3 - 1/4\nคำแนะนำ: ควบคุมอาหารและออกกำลังกายสม่ำเสมอ, ควบคุมน้ำหนักให้อยู่ในเกณฑ์ที่เหมาะสม, ตรวจความดันโลหิต, ตรวจระดับน้ำตาลในเลือด, ควรประเมินความเสี่ยงซ้ำทุก 1 ปี";
+            return "ความเสี่ยงสูงมาก, โอกาสเกิดเบาหวาน 1/3 - 1/4";
         } else {
             return "";
         }
     };
 
+    const getSuggestion = (score: number): string =>{
+        if (score >= 0 && score <= 2) {
+            return "ออกกำลังกายสม่ำเสมอ, ควบคุมน้ำหนักให้อยู่ในเกณฑ์ที่เหมาะสม";
+        } else if (score >= 3 && score <= 5) {
+            return "ออกกำลังกายสม่ำเสมอ, ควบคุมน้ำหนักให้อยู่ในเกณฑ์ที่เหมาะสม, ตรวจความดันโลหิต, ตรวจระดับน้ำตาลในเลือด, ควรประเมินความเสี่ยงซ้ำทุก 1-3 ปี";
+        } else if (score >= 6 && score <= 8) {
+            return "ควบคุมอาหารและออกกำลังกายสม่ำเสมอ, ควบคุมน้ำหนักให้อยู่ในเกณฑ์ที่เหมาะสม, ตรวจความดันโลหิต, ตรวจระดับน้ำตาลในเลือด, ควรประเมินความเสี่ยงซ้ำทุก 1-3 ปี";
+        } else if (score > 8) {
+            return "ควบคุมอาหารและออกกำลังกายสม่ำเสมอ, ควบคุมน้ำหนักให้อยู่ในเกณฑ์ที่เหมาะสม, ตรวจความดันโลหิต, ตรวจระดับน้ำตาลในเลือด, ควรประเมินความเสี่ยงซ้ำทุก 1 ปี";
+        } else {
+            return "";
+        }
+    }
+
 
     const handleSubmit = () => {
         const score = calculateRiskScore();
         const description = getRiskDescription(score);
+        const suggestion = getSuggestion(score)
         setRiskDescription(description);
         setScore(score);
         setScoreColor(scoreClassName(score))
@@ -101,7 +124,8 @@ const DiabetesForm: React.FC<DiabetesFormProps> = ({ formData, setFormData, onSu
         setFormData((prevForm) => ({
             ...prevForm,
             diabetes_score: (score),
-            diabetes_score_details: (description)
+            diabetes_score_details: (description),
+            diabetes_score_suggestion: suggestion
         }));
 
     };
@@ -208,7 +232,7 @@ const DiabetesForm: React.FC<DiabetesFormProps> = ({ formData, setFormData, onSu
             </Select>
             <div className='flex w-full flex-row justify-end'>
 
-            <Button onClick={handleSubmit} className="bg-primary w-full  text-white sm:w-3/12">
+            <Button onClick={handleSubmit} className="bg-primary text-white ">
                     แปลผล
                 </Button>
             </div>

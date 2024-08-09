@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+//         const thaiCVScore = (input,ln) => {
+//   const convertDataType = (data) => {
+//     try {
+//       if (typeof data === 'number') {
+//         return data;
+//       } else {
+//         return parseFloat(data);
+//       }
+//     } catch (e) {
+//       return 0;
+//     }
+//   };
+
+//   const isUndefined = (data) => data === undefined || data === null;
+
+// if (Object.values(input).some(isUndefined)) {
+//   return {
+//     RiskScore: '99',
+//     RiskGroup: 'CV Risk score can not be calculated',
+//     CompareRiskScore: '99',
+//     Suggestion: ''
+//   };
+// }
+
+//   const Gender = input.Gender === 'F' ? 0 : input.Gender === 'M' ? 1 : 99;
+// console.log("Gender",Gender)
+//   const Age = convertDataType(input.Age);
+//   const Sbp = convertDataType(input.Sbp);
+//   const Dm = convertDataType(input.Dm);
+//   const TotalChol = convertDataType(input.TotalChol);
+//   const Hdl = convertDataType(input.Hdl);
+//   const Ldl = convertDataType(input.Ldl);
+//   const Smoking = convertDataType(input.Smoking);
+//   const Waist = convertDataType(input.Waist);
+//   const Height = convertDataType(input.Height);
+
+//   let WaistHeightRatio;
+//   try {
+//     WaistHeightRatio = Waist / Height;
+//   } catch (e) {
+//     WaistHeightRatio = 0;
+//   }
+
+//   let FullScore = 0;
+//   let CompareScore = 0;
+//   let PredictedRisk = 0;
+//   let CompareRisk = 0;
+//   const SurRoot = 0.964588;
+
+//   let CompareHdl, CompareWhr, CompareWc, CompareSbp;
+
+//   if (Gender === 1) {
+//     CompareHdl = 44;
+//     CompareWhr = 0.58125;
+//     CompareWc = 93;
+//     CompareSbp = Age > 60 ? 132 : 120;
+//   } else if (Gender === 0) {
+//     CompareHdl = 49;
+//     CompareWhr = 0.52667;
+//     CompareWc = 79;
+//     CompareSbp = Age > 60 ? 130 : 115;
+//   }
+
+//   if (Age > 1 && Sbp >= 70 && Gender !== 99 && Dm !== 99 && Smoking !== 99) {
+//     if (TotalChol !== 0) {
+//       FullScore = 0.08183 * Age + 0.39499 * Gender + 0.02084 * Sbp + 0.69974 * Dm + 0.00212 * TotalChol + 0.41916 * Smoking;
+//       PredictedRisk = 1 - Math.pow(SurRoot, Math.exp(FullScore - 7.04423));
+//       CompareScore = 0.08183 * Age + 0.39499 * Gender + 0.02084 * CompareSbp + 0.00212 * 200;
+//       CompareRisk = 1 - Math.pow(SurRoot, Math.exp(CompareScore - 7.04423));
+//       console.log('Using Total Cholesterol...');
+//     } else if (TotalChol === 0 && WaistHeightRatio > 0) {
+//       FullScore = 0.079 * Age + 0.128 * Gender + 0.019350987 * Sbp + 0.58454 * Dm + 3.512566 * WaistHeightRatio + 0.459 * Smoking;
+//       PredictedRisk = 1 - Math.pow(SurRoot, Math.exp(FullScore - 7.712325));
+//       CompareScore = 0.079 * Age + 0.128 * Gender + 0.019350987 * CompareSbp + 3.512566 * CompareWhr;
+//       CompareRisk = 1 - Math.pow(SurRoot, Math.exp(CompareScore - 7.712325));
+//       console.log('Using Waist and Height Ratio...');
+//     } else if (TotalChol === 0 && WaistHeightRatio === 0 && Waist > 0) {
+//       FullScore = 0.08372 * Age + 0.05988 * Gender + 0.02034 * Sbp + 0.59953 * Dm + 0.01283 * Waist + 0.459 * Smoking;
+//       PredictedRisk = 1 - Math.pow(SurRoot, Math.exp(FullScore - 7.31047));
+//       CompareScore = 0.08372 * Age + 0.05988 * Gender + 0.02034 * CompareSbp + 0.01283 * CompareWc;
+//       CompareRisk = 1 - Math.pow(SurRoot, Math.exp(CompareScore - 7.31047));
+//       console.log('Using only Waist (cm)...');
+//     }
+//   } else {
+//     FullScore = '99';
+//     PredictedRisk = '99';
+//     CompareScore = '99';
+//     CompareRisk = '99';
+//   }
+
+//   const RiskGroup = (riskValue) => {
+//     if (riskValue !== '99') {
+//       if (riskValue <= 0) {
+//         return 'Group0';
+//       } else if (riskValue < 0.1) {
+//         return 'Group1';
+//       } else if (riskValue < 0.2) {
+//         return 'Group2';
+//       } else if (riskValue < 0.3) {
+//         return 'Group3';
+//       } else if (riskValue < 0.4) {
+//         return 'Group4';
+//       } else {
+//         return 'Group5';
+//       }
+//     } else {
+//       return 'undefined';
+//     }
+//   };
+
+//   const Group = RiskGroup(PredictedRisk);
+
+//   const PredictedRiskValue = FullScore === '99' ? '99' : (PredictedRisk * 100).toFixed(2);
+//   const CompareRiskValue = FullScore === '99' ? '99' : (CompareRisk * 100).toFixed(2);
+//   console.log("CompareRiskValue",CompareRiskValue)
+//   const suggestions = {
+//     Smoking: {
+//       th: ' เลิกบุหรี่',
+//       en: ' Quit smoking.'
+//     },
+//     Dm: {
+//       th: ' รักษาระดับน้ำตาลในเลือดให้อยู่ในเกณฑ์ปกติ',
+//       en: ' Maintain blood sugar level within normal range.'
+//     },
+//     Sbp: {
+//       th: ' ควบคุมระดับความดันโลหิตให้ดี',
+//       en: ' Control blood pressure.'
+//     },
+//     TotalChol: {
+//       th: ' เข้ารับการรักษาเพื่อลดโคเรสเตอรอลในเลือด',
+//       en: ' Intensify cholesterol-lowering therapy.'
+//     },
+//     Waist: {
+//       th: ' ลดน้ำหนักให้อยู่ในเกณฑ์ปกติ',
+//       en: ' Body weight lowering.'
+//     },
+//     Group0: {
+//       th: 'ไม่พบความเสี่ยง',
+//       en: 'No risk'
+//     },
+//     Group1: {
+//       th: 'จัดอยู่ในกลุ่มเสี่ยงน้อย',
+//       en: 'Classified as low risk'
+//     },
+//     Group2: {
+//       th: 'จัดอยู่ในกลุ่มเสี่ยงปานกลาง',
+//       en: 'Classified as medium risk'
+//     },
+//     Group3: {
+//       th: 'จัดอยู่ในกลุ่มเสี่ยงสูง',
+//       en: 'Classified as high risk'
+//     },
+//     Group4: {
+//       th: 'จัดอยู่ในกลุ่มเสี่ยงสูงมาก',
+//       en: 'Classified as very high risk'
+//     },
+//     Group5: {
+//       th: 'จัดอยู่ในกลุ่มเสี่ยงสูงอันตราย',
+//       en: 'Classified as dangerously high risk'
+//     },
+//     undefined: {
+//       th: 'ไม่สามารถคำนวณค่า CV Risk Score ได้',
+//       en: 'CV Risk score can not be calculated'
+//     },
+//     NoRisk: {
+//       th: 'สามารถป้องกันการเกิดโรคหลอดเลือดหัวใจในอนาคตได้ด้วยการออกกำลังกายอย่างสม่ำเสมอ',
+//       en: 'Regular exercise could help you prevent atherosclerotic cardiovascular disease in the future.'
+//     },
+//     LowRisk: {
+//       th: 'เพื่อป้องกันการเกิดโรคหลอดเลือดในอนาคต ควรออกกำลังกายอย่างสม่ำเสมอ รับประทานผักผลไม้เป็นประจำ',
+//       en: 'It is reasonable to prevent atherosclerotic cardiovascular disease in the future by regular exercise, high fiber dietary.'
+//     },
+//     MedRisk: {
+//       th: 'ควรออกกำลังกายอย่างสม่ำเสมอ รับประทานผักผลไม้เป็นประจำ',
+//       en: 'You should have regular exercise, high fiber dietary.'
+//     },
+//     HighRisk: {
+//       th: 'ควรเข้ารับคำปรึกษาจากแพทย์ ในเบื้องต้นควรออกกำลังกายอย่างสม่ำเสมอ รับประทานผักผลไม้เป็นประจำ',
+//       en: 'You must visit the physician for a health checkup and receive proper therapy. You must have regular exercise, high fiber dietary.'
+//     },
+//     Recom: {
+//       th: ' และเข้ารับการตรวจสุขภาพประจำปีอย่างสม่ำเสมอ',
+//       en: ' and annual health checkup.'
+//     },
+//   };
+
+//   let Sug = '';
+//   let WholeSug = '';
+
+//   if (suggestions.Smoking && suggestions.Smoking[ln] && Smoking === 1) {
+//     Sug += suggestions.Smoking[ln];
+//   }
+
+//   if (suggestions.Dm && suggestions.Dm[ln] && Dm === 1) {
+//     Sug += suggestions.Dm[ln];
+//   }
+
+//   if (suggestions.Sbp && suggestions.Sbp[ln] && Sbp >= 140) {
+//     Sug += suggestions.Sbp[ln];
+//   }
+
+//   if (suggestions.TotalChol && suggestions.TotalChol[ln] && (TotalChol >= 220 || Ldl >= 190)) {
+//     Sug += suggestions.TotalChol[ln];
+//   }
+
+//   if (Group === 'Group0') {
+//     WholeSug = suggestions.NoRisk[ln];
+//   } else if (Group === 'Group1') {
+//     WholeSug = suggestions.LowRisk[ln] + Sug + suggestions.Recom[ln];
+//   } else if (Group === 'Group2') {
+//     WholeSug = suggestions.MedRisk[ln] + Sug + suggestions.Recom[ln];
+//   } else if (Group === 'Group3' || Group === 'Group4' || Group === 'Group5') {
+//     WholeSug = suggestions.HighRisk[ln] + Sug;
+//   }
+
+//   let GroupDesc = '';
+
+//   if (suggestions[Group] && suggestions[Group][ln]) {
+//     GroupDesc = suggestions[Group][ln];
+//   }
+
+//   const Output = {
+//     RiskScore: String(PredictedRiskValue),
+//     RiskGroup: GroupDesc,
+//     CompareRiskScore: String(CompareRiskValue),
+//     Suggestion: WholeSug
+//   };
+
+//   return Output;
+// };
+
+// // Example usage:
+// const input = {
+//   Age: 36,
+//   Gender: 'F',
+//   Sbp: '20',
+//   Dm: '1',
+//   TotalChol: '230',
+//   Hdl: '10',
+//   Ldl: '160',
+//   Smoking: '0',
+//   Waist: '120',
+//   Height: '165'
+// };
+
+// console.log(input)
+
+// console.log(thaiCVScore(input,"th"));
+
+const thaiCVScore = (input, ln) => {
+  const convertDataType = (data) => {
+    try {
+      if (typeof data === 'number') {
+        return data;
+      } else {
+        return parseFloat(data);
+      }
+    } catch (e) {
+      return 0;
+    }
+  };
+
+  const isUndefined = (data) => data === undefined || data === null;
+
+  if (Object.values(input).some(isUndefined)) {
+    return {
+      RiskScore: '99',
+      RiskGroup: 'CV Risk score can not be calculated',
+      CompareRiskScore: '99',
+      Suggestion: ''
+    };
+  }
+
+  const Gender = input.Gender === 'F' ? 0 : input.Gender === 'M' ? 1 : 99;
+
+  const Age = convertDataType(input.Age);
+  const Sbp = convertDataType(input.Sbp);
+  const Dm = convertDataType(input.Dm);
+  const TotalChol = convertDataType(input.TotalChol);
+  const Hdl = convertDataType(input.Hdl);
+  const Ldl = convertDataType(input.Ldl);
+  const Smoking = convertDataType(input.Smoking);
+  const Waist = convertDataType(input.Waist);
+  const Height = convertDataType(input.Height);
+
+  let WaistHeightRatio;
+  try {
+    WaistHeightRatio = Waist / Height;
+  } catch (e) {
+    WaistHeightRatio = 0;
+  }
+
+  let FullScore = 0;
+  let CompareScore = 0;
+  let PredictedRisk = 0;
+  let CompareRisk = 0;
+  const SurRoot = 0.964588;
+
+  let CompareHdl, CompareWhr, CompareWc, CompareSbp;
+
+  if (Gender === 1) {
+    CompareHdl = 44;
+    CompareWhr = 0.58125;
+    CompareWc = 93;
+    CompareSbp = Age > 60 ? 132 : 120;
+  } else if (Gender === 0) {
+    CompareHdl = 49;
+    CompareWhr = 0.52667;
+    CompareWc = 79;
+    CompareSbp = Age > 60 ? 130 : 115;
+  }
+
+  if (Age > 1 && Sbp >= 70 && Gender !== 99 && Dm !== 99 && Smoking !== 99) {
+    if (TotalChol !== 0) {
+      FullScore = 0.08183 * Age + 0.39499 * Gender + 0.02084 * Sbp + 0.69974 * Dm + 0.00212 * TotalChol + 0.41916 * Smoking;
+      PredictedRisk = 1 - Math.pow(SurRoot, Math.exp(FullScore - 7.04423));
+      CompareScore = 0.08183 * Age + 0.39499 * Gender + 0.02084 * CompareSbp + 0.00212 * 200;
+      CompareRisk = 1 - Math.pow(SurRoot, Math.exp(CompareScore - 7.04423));
+      console.log('Using Total Cholesterol...');
+    } else if (TotalChol === 0 && WaistHeightRatio > 0) {
+      FullScore = 0.079 * Age + 0.128 * Gender + 0.019350987 * Sbp + 0.58454 * Dm + 3.512566 * WaistHeightRatio + 0.459 * Smoking;
+      PredictedRisk = 1 - Math.pow(SurRoot, Math.exp(FullScore - 7.712325));
+      CompareScore = 0.079 * Age + 0.128 * Gender + 0.019350987 * CompareSbp + 3.512566 * CompareWhr;
+      CompareRisk = 1 - Math.pow(SurRoot, Math.exp(CompareScore - 7.712325));
+      console.log('Using Waist and Height Ratio...');
+    } else if (TotalChol === 0 && WaistHeightRatio === 0 && Waist > 0) {
+      FullScore = 0.08372 * Age + 0.05988 * Gender + 0.02034 * Sbp + 0.59953 * Dm + 0.01283 * Waist + 0.459 * Smoking;
+      PredictedRisk = 1 - Math.pow(SurRoot, Math.exp(FullScore - 7.31047));
+      CompareScore = 0.08372 * Age + 0.05988 * Gender + 0.02034 * CompareSbp + 0.01283 * CompareWc;
+      CompareRisk = 1 - Math.pow(SurRoot, Math.exp(CompareScore - 7.31047));
+      console.log('Using only Waist (cm)...');
+    }
+  } else {
+    FullScore = '60';
+    PredictedRisk = '40';
+    CompareScore = '50';
+    CompareRisk = '70';
+  }
+
+  const RiskGroup = (riskValue) => {
+    if (riskValue !== '99') {
+      if (riskValue <= 0) {
+        return 'Group0';
+      } else if (riskValue < 0.1) {
+        return 'Group1';
+      } else if (riskValue < 0.2) {
+        return 'Group2';
+      } else if (riskValue < 0.3) {
+        return 'Group3';
+      } else if (riskValue < 0.4) {
+        return 'Group4';
+      } else {
+        return 'Group5';
+      }
+    } else {
+      return 'undefined';
+    }
+  };
+
+  const Group = RiskGroup(PredictedRisk);
+
+  const PredictedRiskValue = FullScore === '99' ? '99' : (PredictedRisk * 100).toFixed(2);
+  const CompareRiskValue = FullScore === '99' ? '99' : (CompareRisk * 100).toFixed(2);
+
+  const suggestions = {
+    Smoking: {
+      th: ' เลิกบุหรี่',
+      en: ' Quit smoking.'
+    },
+    Dm: {
+      th: ' รักษาระดับน้ำตาลในเลือดให้อยู่ในเกณฑ์ปกติ',
+      en: ' Maintain blood sugar level within normal range.'
+    },
+    Sbp: {
+      th: ' ควบคุมระดับความดันโลหิตให้ดี',
+      en: ' Control blood pressure.'
+    },
+    TotalChol: {
+      th: ' เข้ารับการรักษาเพื่อลดโคเรสเตอรอลในเลือด',
+      en: ' Intensify cholesterol-lowering therapy.'
+    },
+    Waist: {
+      th: ' ลดน้ำหนักให้อยู่ในเกณฑ์ปกติ',
+      en: ' Body weight lowering.'
+    },
+    Group0: {
+      th: 'ไม่พบความเสี่ยง',
+      en: 'No risk'
+    },
+    Group1: {
+      th: 'จัดอยู่ในกลุ่มเสี่ยงน้อย',
+      en: 'Classified as low risk'
+    },
+    Group2: {
+      th: 'จัดอยู่ในกลุ่มเสี่ยงปานกลาง',
+      en: 'Classified as medium risk'
+    },
+    Group3: {
+      th: 'จัดอยู่ในกลุ่มเสี่ยงสูง',
+      en: 'Classified as high risk'
+    },
+    Group4: {
+      th: 'จัดอยู่ในกลุ่มเสี่ยงสูงมาก',
+      en: 'Classified as very high risk'
+    },
+    Group5: {
+      th: 'จัดอยู่ในกลุ่มเสี่ยงสูงอันตราย',
+      en: 'Classified as dangerously high risk'
+    },
+    undefined: {
+      th: 'ไม่สามารถคำนวณค่า CV Risk Score ได้',
+      en: 'CV Risk score can not be calculated'
+    },
+    NoRisk: {
+      th: 'สามารถป้องกันการเกิดโรคหลอดเลือดหัวใจในอนาคตได้ด้วยการออกกำลังกายอย่างสม่ำเสมอ',
+      en: 'Regular exercise could help you prevent atherosclerotic cardiovascular disease in the future.'
+    },
+    LowRisk: {
+      th: 'เพื่อป้องกันการเกิดโรคหลอดเลือดในอนาคต ควรออกกำลังกายอย่างสม่ำเสมอ รับประทานผักผลไม้เป็นประจำ',
+      en: 'It is reasonable to prevent atherosclerotic cardiovascular disease in the future by regular exercise, high fiber dietary.'
+    },
+    MedRisk: {
+      th: 'ควรออกกำลังกายอย่างสม่ำเสมอ รับประทานผักผลไม้เป็นประจำ',
+      en: 'You should have regular exercise, high fiber dietary.'
+    },
+    HighRisk: {
+      th: 'ควรเข้ารับคำปรึกษาจากแพทย์ ในเบื้องต้นควรออกกำลังกายอย่างสม่ำเสมอ รับประทานผักผลไม้เป็นประจำ',
+      en: 'You must visit the physician for a health checkup and receive proper therapy. You must have regular exercise, high fiber dietary.'
+    },
+    Recom: {
+      th: ' และเข้ารับการตรวจสุขภาพประจำปีอย่างสม่ำเสมอ',
+      en: ' and annual health checkup.'
+    },
+  };
+
+  let Sug = '';
+  let WholeSug = '';
+
+  if (suggestions.Smoking && suggestions.Smoking[ln] && Smoking === 1) {
+    Sug += suggestions.Smoking[ln];
+  }
+
+  if (suggestions.Dm && suggestions.Dm[ln] && Dm === 1) {
+    Sug += suggestions.Dm[ln];
+  }
+
+  if (suggestions.Sbp && suggestions.Sbp[ln] && Sbp >= 140) {
+    Sug += suggestions.Sbp[ln];
+  }
+
+  if (suggestions.TotalChol && suggestions.TotalChol[ln] && (TotalChol >= 220 || Ldl >= 190)) {
+    Sug += suggestions.TotalChol[ln];
+  }
+
+  if (Group === 'Group0') {
+    WholeSug = suggestions.NoRisk[ln];
+  } else if (Group === 'Group1') {
+    WholeSug = suggestions.LowRisk[ln] + Sug + suggestions.Recom[ln];
+  } else if (Group === 'Group2') {
+    WholeSug = suggestions.MedRisk[ln] + Sug + suggestions.Recom[ln];
+  } else if (Group === 'Group3' || Group === 'Group4' || Group === 'Group5') {
+    WholeSug = suggestions.HighRisk[ln] + Sug;
+  }
+
+  let GroupDesc = '';
+
+  if (suggestions[Group] && suggestions[Group][ln]) {
+    GroupDesc = suggestions[Group][ln];
+  }
+
+  const Output = {
+    RiskScore: String(PredictedRiskValue),
+    RiskGroup: GroupDesc,
+    CompareRiskScore: String(CompareRiskValue),
+    Suggestion: WholeSug
+  };
+
+  return Output;
+};
+
+// Example usage:
+const input = {
+  Age: 36,
+  Gender: 'F',
+  Sbp: '20',
+  Dm: '1',
+  TotalChol: '230',
+  Hdl: '10',
+  Ldl: '160',
+  Smoking: '0',
+  Waist: '120',
+  Height: '165'
+};
+const ln = 'th'; // or 'th' for Thai language
+console.log(thaiCVScore(input, ln));
+    </script>
+</body>
+</html>

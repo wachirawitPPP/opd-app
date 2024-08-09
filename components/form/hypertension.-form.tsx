@@ -1,6 +1,5 @@
 import { Card, CardBody, DateInput, Input, Tab, Tabs, Button } from '@nextui-org/react';
 import React, { useEffect, useState } from 'react';
-
 interface FormData {
   SBP: string;
   DBP: string;
@@ -10,10 +9,18 @@ interface FormData {
   gender: string;
   bmi: string;
   bp: string;
-  diabetes_score:number
-  diabetes_score_details:string
+  diabetes_score: number;
+  diabetes_score_details: string;
+  diabetes_score_suggestion: string;
   family_history: string;
   waistline: string;
+  smoking: boolean;
+  diabetes: boolean;
+  cholesterol: number | null;
+  height: string;
+  heart_score: number;
+  heart_score_detail: string;
+  heart_score_suggestion: string;
 }
 const scoreClassName   = (score: string) => {
   if (score == "ต่ำกว่าเกณฑ์") return "text-red-500";
@@ -35,6 +42,7 @@ const HypertensionForm: React.FC<HypertensionFormProps> = ({ formData, setFormDa
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    
   };
 
   const calculateHypertensionScore = () => {
@@ -98,7 +106,7 @@ const HypertensionForm: React.FC<HypertensionFormProps> = ({ formData, setFormDa
       </div>
       <div className='flex w-full flex-row justify-end'>
 
-<Button onClick={handleSubmit} className="bg-primary w-full  text-white sm:w-3/12">
+<Button onClick={handleSubmit} className="bg-primary text-white">
         แปลผล
     </Button>
 </div>

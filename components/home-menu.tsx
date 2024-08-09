@@ -19,7 +19,7 @@ const HomeMenu = () => {
           </Card>
         </Link>
         <Link href='/nicotine-test' className='w-full h-28 sm:w-4/12 flex justify-center' passHref>
-        <Card className="w-full py-4 h-28 bg-gradient-to-r bg-blue-700 hover:bg-blue-300 transition-transform duration-100 ease-in-out transform hover:scale-105">
+        <Card className="w-full py-4 h-28 bg-gradient-to-r bg-red-500 hover:bg-red-300 transition-transform duration-100 ease-in-out transform hover:scale-105">
             <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
               <p className="text-larg font-bold">แบบประเมินระดับการเสพติดนิโคติน</p>
               <small className="text-default-200">คลิกเพื่อเข้าสู่แบบคัดกรอง</small>

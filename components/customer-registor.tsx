@@ -698,7 +698,7 @@ const CustomerRegistor: React.FC<CustomerRegistorProps> = ({ customer, cardData,
                     endContent={"ปี"}
                 />
             </div>
-            <div className="flex w-full flex-wrap py-3 md:flex-nowrap mb-6 md:mb-0 " >
+            {/* <div className="flex w-full flex-wrap py-3 md:flex-nowrap mb-6 md:mb-0 " >
                 <Select name="religion" size="sm" label=" ศาสนา" placeholder="เลือกศาสนา" className={inputWidth} selectedKeys={[form.religion]} onSelectionChange={(keys) => handleReligionStatusChange(Array.from(keys) as string[])}>
                     <SelectItem key="ไม่ระบุ">ไม่ระบุ</SelectItem>
                     <SelectItem key="พุทธ">พุทธ</SelectItem>
@@ -761,8 +761,8 @@ const CustomerRegistor: React.FC<CustomerRegistorProps> = ({ customer, cardData,
                     className={inputWidth}
                     label="อาชีพ"
                 />
-            </div>
-            <div className="flex w-full flex-wrap py-3 md:flex-nowrap mb-6 md:mb-0 ">
+            </div> */}
+            {/* <div className="flex w-full flex-wrap py-3 md:flex-nowrap mb-6 md:mb-0 ">
                 <Select
                     name="personal_status_address"
                     size="sm"
@@ -804,7 +804,7 @@ const CustomerRegistor: React.FC<CustomerRegistorProps> = ({ customer, cardData,
                     <SelectItem key={"ผู้ดูแลผู้ป่วยที่ไม่ผ่านการอบรม"}>ผู้ดูแลผู้ป่วยที่ไม่ผ่านการอบรม</SelectItem>
 
                 </Select>
-            </div>
+            </div> */}
 
             <Divider className="my-2" />
             <div className="flex w-full flex-wrap py-3 md:flex-nowrap md mb-6 md:mb-0 ">
@@ -854,7 +854,7 @@ const CustomerRegistor: React.FC<CustomerRegistorProps> = ({ customer, cardData,
 
             </div>
             <Divider className="my-2" />
-            <p className="w-full font-bold">การปฏิบัติตัวเมื่อเจ็บป่วยเล็กน้อย (ปฎิบัติบ่อยที่สุด 1-3 ตามลำดับ)</p>
+            {/* <p className="w-full font-bold">การปฏิบัติตัวเมื่อเจ็บป่วยเล็กน้อย (ปฎิบัติบ่อยที่สุด 1-3 ตามลำดับ)</p>
             <div className="flex w-full flex-wrap py-3 md:flex-nowrap mb-6 md:mb-0 ">
                 <Select
                     name="selfcare1"
@@ -937,8 +937,8 @@ const CustomerRegistor: React.FC<CustomerRegistorProps> = ({ customer, cardData,
 
 
             </div>
-            <Divider className="my-2" />
-            <div className="flex w-full flex-wrap py-3 md:flex-nowrap mb-6 md:mb-0 gap-4">
+            <Divider className="my-2" /> */}
+            {/* <div className="flex w-full flex-wrap py-3 md:flex-nowrap mb-6 md:mb-0 gap-4">
                 <p className="font-bold">โรคประจำตัว</p>
                 <Checkbox
                     name="noChronicDiseases"
@@ -1077,8 +1077,8 @@ const CustomerRegistor: React.FC<CustomerRegistorProps> = ({ customer, cardData,
                         value={form.food_detail}
                     />
                 </div>
-            )}
-            <div className="flex w-full flex-wrap py-3 md:flex-nowrap mb-6 md:mb-0 gap-4">
+            )} */}
+            {/* <div className="flex w-full flex-wrap py-3 md:flex-nowrap mb-6 md:mb-0 gap-4">
                 <p className="font-bold">ประวัติครอบครัวสายตรง</p>
                 <Checkbox
                     name="family_history"
@@ -1109,8 +1109,8 @@ const CustomerRegistor: React.FC<CustomerRegistorProps> = ({ customer, cardData,
                         value={form.family_history_disease}
                     />
                 </div>
-            )}
-            <Divider className="my-2" />
+            )} */}
+            {/* <Divider className="my-2" /> */}
             <p className="font-bold">ประเมินสุขภาพ</p>
             <div className="flex w-full flex-wrap py-3 md:flex-nowrap mb-6 md:mb-0 ">
 
@@ -1191,7 +1191,6 @@ const CustomerRegistor: React.FC<CustomerRegistorProps> = ({ customer, cardData,
             <p className="font-bold">ความเสี่ยงด้านสุขภาพ</p>
             <div className="flex w-full flex-wrap py-3 md:flex-nowrap mb-6 md:mb-0 gap-4">
                 <CheckboxGroup
-                    label="Select cities"
                     orientation="horizontal"
                     value={riskSummary}
                     className="w-8/12"
@@ -1212,8 +1211,8 @@ const CustomerRegistor: React.FC<CustomerRegistorProps> = ({ customer, cardData,
                 </CheckboxGroup>
             </div>
             <Divider className="my-2" />
-            <p className="font-bold">สรุปภาวะสุขภาพ</p>
-            <div className="flex w-full flex-wrap py-3 md:flex-nowrap mb-6 md:mb-0 gap-4">
+            {/* <p className="font-bold">สรุปภาวะสุขภาพ</p> */}
+            {/* <div className="flex w-full flex-wrap py-3 md:flex-nowrap mb-6 md:mb-0 gap-4">
                 <RadioGroup
                     name="health_summary"
                     value={form.health_summary}
@@ -1236,9 +1235,9 @@ const CustomerRegistor: React.FC<CustomerRegistorProps> = ({ customer, cardData,
                         กลุ่มป่วยที่ควบคุมโรคไม่ได้
                     </Radio>
                 </RadioGroup>
-            </div>
+            </div> */}
             <div className="flex w-full justify-end mt-4">
-                <Button className="bg-primary" size="lg" type="submit"> บันทึกข้อมูล</Button>
+                <Button className="bg-primary text-white" size="lg" type="submit"> บันทึกข้อมูล</Button>
             </div>
         </form>
     );

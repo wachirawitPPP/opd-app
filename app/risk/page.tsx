@@ -11,7 +11,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import HypertensionForm from '@/components/form/hypertension.-form';
 import DiabetesForm from '@/components/form/diabetes';
 import ThaiCVRiskForm from '@/components/form/thai-cv-risk-form';
-
+import RisGroupSummary from '@/components/form/risk-group-summary'
+import TestRiskForm from '@/components/form/testriskform'
 
 
 interface FormData {
@@ -23,10 +24,18 @@ interface FormData {
     gender: string;
     bmi: string;
     bp: string;
-    diabetes_score: number
-    diabetes_score_details: string
+    diabetes_score: number;
+    diabetes_score_details: string;
+    diabetes_score_suggestion: string;
     family_history: string;
     waistline: string;
+    smoking: boolean;
+    diabetes: boolean;
+    cholesterol: number | null;
+    height: string;
+    heart_score: number;
+    heart_score_detail: string;
+    heart_score_suggestion: string;
 }
 
 const RiskPage: React.FC = () => {
@@ -44,13 +53,22 @@ const RiskPage: React.FC = () => {
         gender: '',
         bmi: '',
         bp: '',
-        diabetes_score: 0,
+        diabetes_score: -1,
         diabetes_score_details: "",
+        diabetes_score_suggestion: '',
         family_history: 'ไม่มี',
         waistline: '',
+        smoking: false,
+        diabetes: false,
+        cholesterol: 0,
+        height: '0',
+        heart_score: 0,
+        heart_score_detail: '',
+        heart_score_suggestion: '',
+
     });
     const [submittedData, setSubmittedData] = useState<{ data: FormData; description: string } | null>(null);
-
+    const [showCardRiskSummary, setShowCardRiskSummary] = useState<any>('0')
     const fetchData = async () => {
         if (!/^\d{13}$/.test(idCard)) {
             setError(true);
@@ -68,6 +86,7 @@ const RiskPage: React.FC = () => {
             if (response.data.message !== "User found successfully") {
                 setCustomer(null);
                 toast.error("ไม่พบหมายเลขบัตรประชาชน");
+                setShowCardRiskSummary('0')
             } else {
                 setCustomer(data);
                 setFormData((prev) => ({
@@ -76,9 +95,17 @@ const RiskPage: React.FC = () => {
                     gender: data.gender,
                     bmi: data.bmi,
                     bp: data.bp,
-                    waistline: data.waistline
+                    waistline: data.waistline,
+                    height: data.height,
                 }));
                 console.log("res", response);
+
+                axios.get(`${process.env.NEXT_PUBLIC_API_URL}/assment_summary/${data.id}`).then((response) => {
+                    console.log("assment_summary", response) 
+                    if(response.data.data.length > 0){
+                        setShowCardRiskSummary('1')
+                    }
+                })
             }
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -100,53 +127,79 @@ const RiskPage: React.FC = () => {
 
             const data = {
                 customer_id: customer?.id,
-                question_type_id: 7, // Assuming 7 is the correct question_type_id for hypertension
+                question_type_id: 8,
                 assmt_status: 1,
                 total_score,
-                total_score_detail: "",
+                total_score_detail: formData.HypertensionScore,
             };
 
             console.log("Data to submit (Hypertension):", data);
 
-            try {
-                const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/create_assment`, data);
-                console.log("Response (Hypertension):", response.data);
-                toast.success("บันทึกข้อมูลความดันโลหิตสูงสำเร็จ");
-                // Handle successful response
-            } catch (error) {
-                console.error("Error submitting hypertension form", error);
-                toast.error("ไม่สามารถบันทึกข้อมูลความดันโลหิตสูงได้ ลองใหม่อีกครั้ง");
-                // Handle error response
-            }
+            // try {
+            //     const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/create_assment`, data);
+            //     console.log("Response (Hypertension):", response.data);
+            //     toast.success("บันทึกข้อมูลความดันโลหิตสูงสำเร็จ");
+            //     // Handle successful response
+            // } catch (error) {
+            //     console.error("Error submitting hypertension form", error);
+            //     toast.error("ไม่สามารถบันทึกข้อมูลความดันโลหิตสูงได้ ลองใหม่อีกครั้ง");
+            //     // Handle error response
+            // }
         };
 
         const diabetes = async () => {
             const data = {
                 customer_id: customer?.id,
-                question_type_id: 8, // Assuming 8 is the correct question_type_id for diabetes
+                question_type_id: 9,
                 assmt_status: 1,
                 total_score: formData.diabetes_score,
                 total_score_detail: formData.diabetes_score_details,
+                suggestion: formData.diabetes_score_suggestion
             };
 
             console.log("Data to submit (Diabetes):", data);
 
-            try {
-                const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/create_assment`, data);
-                console.log("Response (Diabetes):", response.data);
-                toast.success("บันทึกข้อมูลเบาหวานสำเร็จ");
-                // Handle successful response
-            } catch (error) {
-                console.error("Error submitting diabetes form", error);
-                toast.error("ไม่สามารถบันทึกข้อมูลเบาหวานได้ ลองใหม่อีกครั้ง");
-                // Handle error response
-            }
+            // try {
+            //     const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/create_assment`, data);
+            //     console.log("Response (Diabetes):", response.data);
+            //     toast.success("บันทึกข้อมูลเบาหวานสำเร็จ");
+            //     // Handle successful response
+            // } catch (error) {
+            //     console.error("Error submitting diabetes form", error);
+            //     toast.error("ไม่สามารถบันทึกข้อมูลเบาหวานได้ ลองใหม่อีกครั้ง");
+            //     // Handle error response
+            // }
+        };
+        const heart = async () => {
+            const data = {
+                customer_id: customer?.id,
+                question_type_id: 9,
+                assmt_status: 1,
+                total_score: formData.heart_score,
+                total_score_detail: formData.heart_score_detail,
+                suggestion: formData.heart_score_suggestion
+            };
+
+            console.log("Data to submit (Heart):", data);
+
+            // try {
+            //     const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/create_assment`, data);
+            //     console.log("Response (Diabetes):", response.data);
+            //     toast.success("บันทึกข้อมูลเบาหวานสำเร็จ");
+            //     // Handle successful response
+            // } catch (error) {
+            //     console.error("Error submitting diabetes form", error);
+            //     toast.error("ไม่สามารถบันทึกข้อมูลเบาหวานได้ ลองใหม่อีกครั้ง");
+            //     // Handle error response
+            // }
         };
 
         // First call the hypertension function
         await hypertension();
         // Then call the diabetes function
         await diabetes();
+
+        await heart()
     };
 
 
@@ -180,30 +233,32 @@ const RiskPage: React.FC = () => {
                     </div>
                 </div>
 
-                <Divider className="my-4" />
-                <p className='text-large'>1. แบบประเมินความเสี่ยงการเกิดโรคความดันโลหิตสูง</p>
-                <HypertensionForm formData={formData} setFormData={setFormData} onSubmit={handleFormSubmit} />
-                <Divider className="my-4" />
-                <p className='text-large'>2. แบบประเมินความเสี่ยงการเกิดโรคเบาหวานชนิดที่ 2</p>
-                <DiabetesForm formData={formData} setFormData={setFormData} onSubmit={handleFormSubmit} />
-                {/* {submittedData && (
-                    <div className="mt-4">
-                        <p className="text-lg font-bold">Submitted Data:</p>
-                        <pre>{JSON.stringify(submittedData.data, null, 2)}</pre>
-                        <p className="text-lg font-bold">Risk Description:</p>
-                        <p>{submittedData.description}</p>
-                    </div>
-                )} */}
-                {/* <Divider className="my-4" />
-                <ThaiCVRiskForm/> */}
-                <Divider className="my-4" />
-                <div className='flex w-full flex-row justify-end mb-4'>
+                {customer && (
+                    <>
+                        <Divider className="my-4" />
+                        <p className='text-large'>1. แบบประเมินความเสี่ยงการเกิดโรคความดันโลหิตสูง</p>
+                        <HypertensionForm formData={formData} setFormData={setFormData} onSubmit={handleFormSubmit} />
+                        <Divider className="my-4" />
+                        <p className='text-large'>2. แบบประเมินความเสี่ยงการเกิดโรคเบาหวานชนิดที่ 2</p>
+                        <DiabetesForm formData={formData} setFormData={setFormData} onSubmit={handleFormSubmit} />
+                        <Divider className="my-4" />
+                        <p className='text-large'>2. แบบประเมินความเสี่ยงการเกิดโรคเบาหวานชนิดที่ 2</p>
+                        <ThaiCVRiskForm formData={formData} setFormData={setFormData} onSubmit={handleFormSubmit} />
+                        <Divider className="my-4" />
+                        <div className='flex w-full flex-row justify-end mb-4'>
 
-                    <Button onClick={handleSubmit} className="bg-primary w-full  text-white sm:w-3/12">
-                        บันทึกผล
-                    </Button>
-                </div>
+
+                            <Button isDisabled={formData.diabetes_score === -1 && formData.Hypertension !== ''} onClick={handleSubmit} className="bg-primary w-full  text-white sm:w-3/12">
+                                บันทึกผล
+                            </Button>
+                        </div>
+                    </>
+
+                )}
+
+
             </Card>
+
         </div>
     );
 }
