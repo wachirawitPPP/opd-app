@@ -19,7 +19,7 @@ export default function TestPage() {
           <Tab key="test2" title="Test 2">
             <Card>
               <CardBody>
-                <ThaiCVRiskForm />
+                {/* <ThaiCVRiskForm /> */}
               </CardBody>
             </Card>
           </Tab>
