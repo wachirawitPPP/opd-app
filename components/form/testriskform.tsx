@@ -76,7 +76,7 @@ export default function TestRiskForm() {
       CompareSbp = Age > 60 ? 130 : 115;
     }   
 
-    if (Age > 1 && Sbp >= 70  && Dm !== 99 && Smoking !== 99) {
+    if (Age > 1 && Sbp >= 70 && Dm !== 99 && Smoking !== 99) {
       if (TotalChol !== 0) {
         FullScore =
           0.08183 * Age +

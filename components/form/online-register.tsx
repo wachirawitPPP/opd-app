@@ -107,26 +107,26 @@ const OnlineRegister = () => {
             appointmentDate: new Date(),
             appt_register_status: 2,
         };
-        // try {
-        //     const response = await axios.post(
-        //         `${process.env.NEXT_PUBLIC_API_URL}/register/customers`,
-        //         data,
-        //     );
-        //     Swal.fire({
-        //         icon: 'success',
-        //         title: 'บันทึกข้อมูลสำเร็จ',
-        //         allowOutsideClick: false,
-        //         showCancelButton: false,
-        //         confirmButtonText: "กลับสู่หน้าหลัก",
-        //     }).then((result: any) => {
-        //         if (result.isConfirmed) {
-        //             router.push('/');
-        //         }
-        //     });;
-        //     console.log(response);
-        // } catch (error) {
-        //     console.error("Error submitting form:", error);
-        // }
+        try {
+            const response = await axios.post(
+                `${process.env.NEXT_PUBLIC_API_URL}/register/customers`,
+                data,
+            );
+            Swal.fire({
+                icon: 'success',
+                title: 'บันทึกข้อมูลสำเร็จ',
+                allowOutsideClick: false,
+                showCancelButton: false,
+                confirmButtonText: "กลับสู่หน้าหลัก",
+            }).then((result: any) => {
+                if (result.isConfirmed) {
+                    router.push('/');
+                }
+            });;
+            console.log(response);
+        } catch (error) {
+            console.error("Error submitting form:", error);
+        }
 
         console.log(data);
     };
@@ -147,7 +147,6 @@ const OnlineRegister = () => {
                         name="lastname"
                         className={inputWidth}
                         onChange={handleInputChange}
-                        isInvalid = {!form.lastname}
                         size="sm"
                         label="นามสกุล"
                         value={form.lastname}

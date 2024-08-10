@@ -1,146 +1,323 @@
-"use client";
-import React, { useState } from "react";
-import { Card, Input, Button, CircularProgress, Spinner } from "@nextui-org/react";
-import CustomerRegistor from "@/components/customer-registor";
-import { IconSearch, IconCreditCardPay } from '@tabler/icons-react';
-import axios from "axios";
-import 'react-toastify/dist/ReactToastify.css';
+'use client'
+import { parseDate } from '@internationalized/date';
+import { Checkbox, DatePicker, Input } from '@nextui-org/react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-import { Oval } from 'react-loader-spinner'; // Import the loader
+const initialForm = {
+    firstname: '',
+    lastname: '',
+    age: '',
+    id_card: '',
+    phone: '',
+    disease_name: '',
+    disease_detail: '',
+    allergic_name: '',
+    allergic_details: '',
+    isallergic: '',
+    birthday: '2000-12-24',
+};
 
-import { Customer } from "@/types/interface";
-import { ToastContainer, Bounce, toast } from "react-toastify";
-import OnlineRegister from "@/components/form/online-register";
+const inputWidth = "px-2 py-2";
 
-export default function AppraisalPage() {
-  const [idCard, setIdCard] = useState("");
-  const [error, setError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [customer, setCustomer] = useState<Customer | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [cardData, setCardData] = useState(null);
-  const [customerList, setCustomerList] = useState({})
-  const [isCreate, setIsCreate] = useState(false)
+const validateEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
+const validatePhone = (phone: string) => /^\d{10}$/.test(phone);
+const validateIdCard = (id_card: string) => /^\d{13}$/.test(id_card);
 
-  const isValidDate = (dateString: string) => {
-    console.log(Date.parse(dateString))
-    return !isNaN(Date.parse(dateString));
-  };
+const OnlineRegister = () => {
+    const [form, setForm] = useState(initialForm);
+    const [birthDate, setBirthDate] = useState(parseDate(form.birthday));
+    const [isDrugAllergic, setIsDrugAllergic] = useState(false);
+    const [isDisease, setIsDisease] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const validateAndSetCustomerData = (data: any) => {
-    if (data.birth_date && !isValidDate(data.birth_date)) {
-      data.birth_date = null; // Or set a default date
-    }
-    setCustomer(data);
-  };
+    const [errors, setErrors] = useState({
+        firstname: '',
+        lastname: '',
+        id_card: '',
+        phone: '',
+        allergic_name: '',
+        allergic_details: '',
+        disease_name: '',
+        disease_detail: '',
+        age: '',
+    });
 
-  const getCustomerList = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/customers`);
-      const data = response.data.data;
-      setCustomerList(data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  }
-  const fetchData = async () => {
-    // Validate ID card input
-    if (!/^\d{13}$/.test(idCard)) {
-      setError(true);
-      setErrorMessage("กรุณาใส่เลขบัตรประชาชน 13 หลัก");
-      return;
-    }
-    setError(false);
-    setErrorMessage("");
+    const router = useRouter();
 
-    setLoading(true); // Start loading
-    try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/customers/${idCard}`,
-      );
-      const data = response.data.data;
+    const calculateAge = (birthDate: Date) => {
+        const today = new Date();
+        let ageYears = today.getFullYear() - birthDate.getFullYear();
+        let ageMonths = today.getMonth() - birthDate.getMonth();
+        let ageDays = today.getDate() - birthDate.getDate();
 
-      setCustomer(data)
-      setCardData(null);
-      setIsCreate(false)
-      console.log("res", response);
+        // Adjust months and years if necessary
+        if (ageDays < 0) {
+            ageMonths--;
+            const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+            ageDays += prevMonth.getDate(); // Add the days from the previous month
+        }
 
+        if (ageMonths < 0) {
+            ageYears--;
+            ageMonths += 12;
+        }
 
-    } catch (error) {
-      console.error('Error fetching data:', error);
+        return {
+            years: ageYears,
+            months: ageMonths,
+            days: ageDays,
+        };
+    };
 
-    } finally {
-      setLoading(false); // Stop loading
-    }
-  };
+    const handleInputChange = (event: React.FormEvent<HTMLInputElement>) => {
+        const { name, value } = event.currentTarget;
+        setForm((prev) => ({ ...prev, [name]: value }));
+    };
 
-  const getCardData = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get("http://127.0.0.1:8008/reader");
-      const data = response.data.card_data;
-      const citizenCode = data.citizen_code;
+    const handleDateChange = (date: Date | undefined) => {
+        if (date) {
+            setBirthDate(parseDate(date.toISOString().split('T')[0]));
+            const age = calculateAge(date);
+            setForm((prev) => ({
+                ...prev,
+                birthday: date.toISOString().split('T')[0],
+                age: `${age.years} years ${age.months} months ${age.days} days`,
+            }));
+        } else {
+            setForm((prev) => ({ ...prev, birthday: '', age: '' }));
+        }
+    };
 
-      if (citizenCode) {
+    const validateForm = () => {
+        const newErrors: any = {};
+
+        if (!form.firstname) newErrors.firstname = 'กรุณากรอกชื่อจริง';
+        if (!form.lastname) newErrors.lastname = 'กรุณากรอกนามสกุล';
+        if (!form.id_card || !validateIdCard(form.id_card)) newErrors.id_card = 'กรุณากรอกเลขบัตรประจำตัวประชาชนให้ถูกต้อง';
+        if (!form.phone || !validatePhone(form.phone)) newErrors.phone = 'กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง';
+        if (isDrugAllergic && (!form.allergic_name || !form.allergic_details)) {
+            newErrors.allergic_name = 'กรุณากรอกข้อมูลแพ้ยาให้ครบถ้วน';
+            newErrors.allergic_details = 'กรุณากรอกข้อมูลแพ้ยาให้ครบถ้วน';
+        }
+        if (isDisease && (!form.disease_name || !form.disease_detail)) {
+            newErrors.disease_name = 'กรุณากรอกข้อมูลโรคประจำตัวให้ครบถ้วน';
+            newErrors.disease_detail = 'กรุณากรอกข้อมูลโรคประจำตัวให้ครบถ้วน';
+        }
+        if (!form.age) newErrors.age = 'กรุณาระบุวันเกิด';
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        setIsSubmitted(true);
+
+        // Validate form data
+        if (!validateForm()) {
+            return;
+        }
+
+        // Calculate age based on the birthDate
+        const birthDateObj = new Date(birthDate.year, birthDate.month - 1, birthDate.day);
+        const age = calculateAge(birthDateObj);
+
+        const data = {
+            firstname: form.firstname,
+            lastname: form.lastname,
+            age: `${age.years}  `,
+            id_card: form.id_card,
+            phone: form.phone,
+            disease: {
+                disease_name: form.disease_name,
+                disease_detail: form.disease_detail,
+            },
+            allergic: {
+                allergic_name: form.allergic_name,
+                allergic_details: form.allergic_details,
+                isallergic: isDrugAllergic,
+            },
+            birthdate: birthDateObj.toISOString(),
+            appointmentDate: new Date(),
+            appt_register_status: 2,
+        };
+
         try {
-          const checkResponse = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/customers/${citizenCode}`);
-          if (checkResponse.data.message === 'User found successfully') {
-            setCustomer(checkResponse.data.data);
-            setCardData(null)
-            setIsCreate(false)
-          } else if (checkResponse.data.message === 'User Not found') {
-            setCardData(data);
-            setCustomer(null)
-            setIsCreate(true)
-          }
+            const response = await axios.post(
+                `${process.env.NEXT_PUBLIC_API_URL}/register/customers`,
+                data,
+            );
+            alert('บันทึกข้อมูลสำเร็จ'); // Use a standard alert instead of SweetAlert
+            router.push('/');
         } catch (error) {
-          // if (error === 404) {
-          //   setCardData(data);
-          // } else {
-          //   console.error('Error checking customer status:', checkError);
-            toast.error('ไม่สามารถดึงข้อมูลได้ ลองใหม่อีกครั้ง');
-          // }
-          console.log(error)
+            console.error("Error submitting form:", error);
+            alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
-      } else if (response.data.card_data.birth_date) {
-        setCardData(data)
 
-      } else {
-        if (response.data.status === "error") {
-          toast.error('ไม่สามารถอ่านบัตรได้ ลองใหม่อีกครั้ง');
-        }
-      }
+        console.log(data);
+    };
 
-      console.log("res", response.data.status);
-      console.log('Card data fetched:', response.data.card_data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      toast.error('ไม่สามารถอ่านบัตรได้ ลองใหม่อีกครั้ง');
-    } finally {
-      setLoading(false); // Stop loading
-    }
-  };
+    useEffect(() => {
+    });
 
+    return (
+        <div className="flex flex-col justify-center pb-12 ">
+          <p className='flex justify-center font-semibold'>ชื่อหน่วยงาน:</p>
+          <p className='flex justify-center font-semibold'>สิทธิการรักษา:</p>
+            <form onSubmit={handleSubmit}>
+                <div className="flex flex-col sm:flex-row">
+                    <Input
+                        name="firstname"
+                        className={inputWidth}
+                        onChange={handleInputChange}
+                        size="sm"
+                        label="ชื่อจริง"
+                        value={form.firstname}
+                        isInvalid={!!errors.firstname}
+                        errorMessage={errors.firstname}
+                    />
+                    <Input
+                        name="lastname"
+                        className={inputWidth}
+                        onChange={handleInputChange}
+                        size="sm"
+                        label="นามสกุล"
+                        value={form.lastname}
+                        isInvalid={!!errors.lastname}
+                        errorMessage={errors.lastname}
+                    />
+                    <DatePicker
+                        name="birthdate"
+                        size="sm"
+                        label="วันเกิด"
+                        variant="bordered"
+                        className={inputWidth}
+                        value={birthDate}
+                        onChange={(value) => {
+                            if (value) {
+                                setBirthDate(value);
+                                const age = calculateAge(new Date(value.year, value.month - 1, value.day));
+                                setForm((prev) => ({
+                                    ...prev,
+                                    age: `${age.years} years ${age.months} months ${age.days} days`,
+                                }));
+                            }
+                        }}
+                    />
+                    <Input
+                        isDisabled={true}
+                        name="age"
+                        className={inputWidth}
+                        size="sm"
+                        label="อายุ"
+                        value={form.age}
+                        isInvalid={!!errors.age}
+                        errorMessage={errors.age}
+                    />
+                </div>
+                <div className="flex flex-col sm:flex-row">
+                    <Input
+                        name="id_card"
+                        className={inputWidth}
+                        onChange={handleInputChange}
+                        size="sm"
+                        label="เลขบัตรประจำตัวประชาชน"
+                        value={form.id_card}
+                        isInvalid={!!errors.id_card}
+                        errorMessage={errors.id_card}
+                    />
+                    <Input
+                        name="phone"
+                        className={inputWidth}
+                        onChange={handleInputChange}
+                        size="sm"
+                        label="เบอร์โทรศัพท์"
+                        value={form.phone}
+                        isInvalid={!!errors.phone}
+                        errorMessage={errors.phone}
+                    />
+                </div>
+                <div className="flex flex-row py-4 px-2">
+                    <p className="font-bold">แพ้ยา</p>
+                    <Checkbox
+                        name="noDrugAllergies"
+                        isSelected={isDrugAllergic}
+                        onValueChange={() => setIsDrugAllergic(!isDrugAllergic)}
+                    >
+                        มีอาการแพ้ยา
+                    </Checkbox>
+                </div>
+                {isDrugAllergic && (
+                    <div className="flex w-full flex-wrap py-3 md:flex-nowrap mb-6 md:mb-0 gap-4">
+                        <Input
+                            name="allergic_name"
+                            size="sm"
+                            className="md:w-6/12 px-2"
+                            label="ระบุชื่อยา"
+                            value={form.allergic_name}
+                            onChange={handleInputChange}
+                            isInvalid={!!errors.allergic_name}
+                            errorMessage={errors.allergic_name}
+                        />
+                        <Input
+                            name="allergic_details"
+                            size="sm"
+                            className="md:w-6/12 px-2"
+                            label="อาการ"
+                            value={form.allergic_details}
+                            onChange={handleInputChange}
+                            isInvalid={!!errors.allergic_details}
+                            errorMessage={errors.allergic_details}
+                        />
+                    </div>
+                )}
+                <div className="flex flex-row py-4 px-2">
+                    <p className="font-bold">โรคประจำตัว</p>
+                    <Checkbox
+                        name="noDrugAllergies"
+                        isSelected={isDisease}
+                        onValueChange={() => setIsDisease(!isDisease)}
+                    >
+                        มีโรคประจำตัว
+                    </Checkbox>
+                </div>
+                {isDisease && (
+                    <div className="flex w-full flex-wrap py-3 md:flex-nowrap mb-6 md:mb-0 gap-4">
+                        <Input
+                            name="disease_name"
+                            size="sm"
+                            className="md:w-6/12 px-2"
+                            label="ระบุชื่อโรคประจำตัว"
+                            value={form.disease_name}
+                            onChange={handleInputChange}
+                            isInvalid={!!errors.disease_name}
+                            errorMessage={errors.disease_name}
+                        />
+                        <Input
+                            name="disease_detail"
+                            size="sm"
+                            className="md:w-6/12 px-2"
+                            label="อาการ"
+                            value={form.disease_detail}
+                            onChange={handleInputChange}
+                            isInvalid={!!errors.disease_detail}
+                            errorMessage={errors.disease_detail}
+                        />
+                    </div>
+                )}
 
-  return (
-    <div className="flex w-full flex-col">
+                <div className='flex justify-center'>
+                <button type="submit" className="flex items-center mt-4 bg-blue-500 text-white px-4 py-2 rounded ">
+                    ลงทะเบียน
+                </button>
 
-      <Card className="w-full p-5 overflow-auto">
-        <p className="text-lg flex justify-center font-bold">ลงทะเบียนล่วงหน้า Online</p>
-        <p className="text-lg flex justify-center font-bold">ชื่อหน่วยงาน</p>
-        <p className="text-lg flex justify-center font-bold">สิทธิ์การรักษา</p>
+                </div>
+              
+            </form>
+        </div>
+    );
+};
 
-        {loading ? (
-          <div className="flex justify-center py-5">
-            <Spinner size="lg" className="w-full" />
-          </div>
-        ) : (
-         <OnlineRegister/>
-        )}
-      </Card>
-    </div>
-  );
-}
+export default OnlineRegister;
