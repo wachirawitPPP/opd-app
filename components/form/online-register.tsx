@@ -1,11 +1,12 @@
 import { parseDate } from '@internationalized/date';
-import { Checkbox, DateInput, DatePicker, Input } from '@nextui-org/react';
+import { Checkbox, DateInput, DatePicker, Input, Select,SelectItem, } from '@nextui-org/react';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
 
 const initialForm = {
+    station_name:'',
     firstname: '',
     lastname: '',
     age: '',
@@ -17,10 +18,11 @@ const initialForm = {
     allergic_name: '',
     allergic_details: '',
     isallergic: '',
+    sex:'',
     birthday: '2000-12-24',
 };
 
-const inputWidth = "px-2";
+const inputWidth = "sm:w-4/12 py-2 px-2 ";
 
 const OnlineRegister = () => {
     const [form, setForm] = useState(initialForm);
@@ -58,6 +60,13 @@ const OnlineRegister = () => {
         const { name, value } = event.currentTarget;
         setForm((prev) => ({ ...prev, [name]: value }));
     };
+    const handleSexStatusChange = (keys: string[]) => {
+        const selectedValue = keys[0];
+        setForm((prevForm) => ({
+            ...prevForm,
+            sex: (selectedValue),
+        }));
+    };
     // useEffect(() => {
     //     if (birthDate) {
     //         const age = calculateAge(new Date(birthDate.year, birthDate.month - 1, birthDate.day));
@@ -89,11 +98,13 @@ const OnlineRegister = () => {
         const age = calculateAge(birthDateObj);
 
         const data = {
+        station_name: form.station_name,
             firstname: form.firstname,
             lastname: form.lastname,
             age: `${age.years} years ${age.months} months ${age.days}`,
             id_card: form.id_card,
             phone: form.phone,
+            sex: form.sex,
             disease: {
                 disease_name: form.disease_name,
                 disease_detail: form.disease_detail,
@@ -108,10 +119,10 @@ const OnlineRegister = () => {
             appt_register_status: 2,
         };
         try {
-            const response = await axios.post(
-                `${process.env.NEXT_PUBLIC_API_URL}/register/customers`,
-                data,
-            );
+            // const response = await axios.post(
+            //     `${process.env.NEXT_PUBLIC_API_URL}/register/customers`,
+            //     data,
+            // );
             Swal.fire({
                 icon: 'success',
                 title: 'บันทึกข้อมูลสำเร็จ',
@@ -123,7 +134,7 @@ const OnlineRegister = () => {
                     router.push('/');
                 }
             });;
-            console.log(response);
+            console.log(data);
         } catch (error) {
             console.error("Error submitting form:", error);
         }
@@ -132,9 +143,17 @@ const OnlineRegister = () => {
     };
 
     return (
-        <div className="flex flex-col">
+        <div className="flex w-full flex-col">
             <form onSubmit={handleSubmit}>
-                <div className="flex flex-row py-4">
+                <div className="flex w-full flex-wrap py-3 md:flex-nowrap mb-6 md:mb-0 ">
+                    <Input
+                        name="station_name"
+                        className={inputWidth}
+                        onChange={handleInputChange}
+                        size="sm"
+                        label="ชื่อสถานบริการ"
+                        value={form.station_name}
+                    />
                     <Input
                         name="firstname"
                         className={inputWidth}
@@ -152,12 +171,14 @@ const OnlineRegister = () => {
                         value={form.lastname}
                     />
                     <DatePicker
+                        
                         name="birthdate"
                         size="sm"
                         label="วันเกิด"
                         variant="bordered"
                         className={inputWidth}
                         value={birthDate}
+                        
                         onChange={(value) => {setBirthDate(value)
                             if (birthDate) {
                                 const age = calculateAge(new Date(birthDate.year, birthDate.month, birthDate.day));
@@ -178,7 +199,7 @@ const OnlineRegister = () => {
                         value={form.age}
                     />
                 </div>
-                <div className="flex flex-row py-4">
+                <div className="flex w-full flex-wrap py-3 md:flex-nowrap mb-6 md:mb-0 ">
                     <Input
                         name="id_card"
                         className={inputWidth}
@@ -195,8 +216,22 @@ const OnlineRegister = () => {
                         label="เบอร์โทรศัพท์"
                         value={form.phone}
                     />
+                                    <Select
+                    name="sex"
+                    size="sm"
+                    className={inputWidth}
+                    label="เพศ"
+                    placeholder="เลือกเพศ"
+
+                    selectedKeys={[form.sex]}
+                    onSelectionChange={(keys) => handleSexStatusChange(Array.from(keys) as string[])}
+                >
+                    <SelectItem key="ไม่ระบุ">ไม่ระบุ</SelectItem>
+                    <SelectItem key="1">ชาย</SelectItem>
+                    <SelectItem key="2">หญิง</SelectItem>
+                </Select>
                 </div>
-                <div className="flex flex-row py-4 px-2">
+                <div className="flex w-full flex-wrap py-3 md:flex-nowrap mb-6 md:mb-0 ">
                     <p className="font-bold">แพ้ยา</p>
                     <Checkbox
                         name="noDrugAllergies"
