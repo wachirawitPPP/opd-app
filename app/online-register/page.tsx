@@ -10,7 +10,7 @@ const initialForm = {
     firstname: '',
     lastname: '',
     age: '',
-    gender: '',
+    gender: '3',
     id_card: '',
     phone: '',
     disease: '',
@@ -150,10 +150,12 @@ const OnlineRegister = () => {
 
     const validateForm = () => {
         const newErrors: any = {};
-        
+
         if (!form.station_name) newErrors.station_name = 'กรุณากรอกชื่อหน่วยงาน';
         if (!form.firstname) newErrors.firstname = 'กรุณากรอกชื่อจริง';
         if (!form.lastname) newErrors.lastname = 'กรุณากรอกนามสกุล';
+        if (!form.gender || form.gender === '3') newErrors.gender = 'กรุณาเลือกเพศ'; // Validate gender selection
+        if (!form.special_rights|| form.special_rights === 'ไม่ระบุ') newErrors.special_rights = 'กรุณาเลือกสิทธิการรักษา'; // Validate special rights selection
         //if (!form.id_card || !validateIdCard(form.id_card)) newErrors.id_card = 'กรุณากรอกเลขบัตรประจำตัวประชาชนให้ถูกต้อง';
         if (!idCard) newErrors.id_card = 'กรุณากรอกเลขบัตรประจำตัวประชาชนให้ถูกต้อง';
         if (!form.phone || !validatePhone(form.phone)) newErrors.phone = 'กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง';
@@ -334,9 +336,10 @@ const OnlineRegister = () => {
                             className={inputWidth}
                             label="เพศ"
                             placeholder="เลือกเพศ"
-
                             selectedKeys={[form.gender]}
                             onSelectionChange={(keys) => handleSexStatusChange(Array.from(keys) as string[])}
+                            isInvalid={!!errors.gender}
+                            errorMessage={errors.gender}
                         >
                             <SelectItem key="3">ไม่ระบุ</SelectItem>
                             <SelectItem key="1">ชาย</SelectItem>
@@ -374,6 +377,8 @@ const OnlineRegister = () => {
                             className={inputWidth}
                             selectedKeys={[form.special_rights]}
                             onSelectionChange={(keys) => handleSpecialRightsStatusChange(Array.from(keys) as string[])}
+                            isInvalid={!!errors.special_rights}
+                            errorMessage={errors.special_rights}
                         >
                             <SelectItem key={"ไม่ระบุ"}>ไม่ระบุ</SelectItem>
                             <SelectItem key="ประกันสุขภาพถ้วนหน้า/บัตรทอง">ประกันสุขภาพถ้วนหน้า/บัตรทอง</SelectItem>
