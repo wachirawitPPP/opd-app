@@ -13,7 +13,7 @@ model Assessments {
   date               DateTime?       @db.Date
   question_type_id   Int?
   assmt_status       Int?            @default(0) @db.TinyInt
-  total_score        Int?
+  total_score        Decimal?        @db.Decimal(10, 2)
   total_score_detail String?         @db.Text
   suggestion         String?         @db.Text
   Customers          Customers?      @relation(fields: [customer_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Assessments_ibfk_1")
@@ -128,6 +128,8 @@ model Customers {
   weight_height           String?               @db.VarChar(50)
   risk_summary            Json?
   health_summary          String?               @db.VarChar(100)
+  appt_register_date      String?               @db.VarChar(50)
+  appt_register_status    Int?                  @default(1) @db.TinyInt
   createdate              DateTime?             @default(now()) @db.DateTime(0)
   updatedate              DateTime?             @default(now()) @db.DateTime(0)
   photo                   String?               @db.LongText
