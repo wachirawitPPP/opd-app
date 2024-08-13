@@ -4,7 +4,7 @@ import { Checkbox, DatePicker, Input, Card, Select, SelectItem, Button } from '@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation'; 
 const initialForm = {
     station_name: '',
     firstname: '',
@@ -28,6 +28,7 @@ const initialForm = {
 };
 
 const inputWidth = "px-2 py-2";
+
 
 const validateEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
 const validatePhone = (phone: string) => /^\d{10}$/.test(phone);
@@ -57,6 +58,13 @@ const OnlineRegister = () => {
     });
 
     const router = useRouter();
+
+    useEffect(() => {
+        const isRegistered = sessionStorage.getItem('isRegistered');
+        if (isRegistered) {
+            router.replace('/online-registor-success');
+        }
+    }, []);
 
     const calculateAge = (birthDate: Date) => {
         const today = new Date();
@@ -249,16 +257,19 @@ const OnlineRegister = () => {
                 title: 'ลงทะเบียนสำเร็จ',
                 allowOutsideClick: false,
                 showCancelButton: false,
-                confirmButtonText: "กลับสู่หน้าหลัก",
+                confirmButtonText: "ยืนยัน",
             }).then((result: any) => {
                 if (result.isConfirmed) {
-                    router.push('/');
+                    //router.push('/');
+                    sessionStorage.setItem('isRegistered', 'true');
+                    router.replace('/online-registor-success');
                 }
             });;
             console.log(data);
         } catch (error) {
             console.error("เกิดข้อผิดพลาดในการลงทะเบียน");
         }
+
         console.log(data);
 
     };
@@ -490,8 +501,9 @@ const OnlineRegister = () => {
                     </div>
 
                 </form>
-            </div>
+            </div> 
         </Card>
+      
     );
 };
 
