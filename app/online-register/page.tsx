@@ -20,9 +20,11 @@ const initialForm = {
     allergic_details: '',
     isallergic: '',
     sex: '',
-    birthday: '2000-12-24',
+    birthday: '2000-01-01',
     special_rights: "ไม่ระบุ",
     special_rights_other: "",
+    sbp:"",
+    dbp:''
 };
 
 const inputWidth = "px-2 py-2";
@@ -307,6 +309,8 @@ const OnlineRegister = () => {
                             variant="bordered"
                             className={inputWidth}
                             value={birthDate}
+                            isInvalid={!!errors.age}
+                            errorMessage={errors.age}
                             showMonthAndYearPickers
                             onChange={(value) => {
                                 if (value) {
@@ -327,8 +331,7 @@ const OnlineRegister = () => {
                             label="อายุ"
                             color='default'
                             value={form.age}
-                            isInvalid={!!errors.age}
-                            errorMessage={errors.age}
+                           
                         />
                         <Select
                             name="sex"
