@@ -5,6 +5,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation'; 
+import useMetadata from '@/components/hooks/useMetadata'
 const initialForm = {
     station_name: '',
     firstname: '',
@@ -30,10 +31,13 @@ const initialForm = {
 const inputWidth = "px-2 py-2";
 
 
+
+
 const validateEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
 const validatePhone = (phone: string) => /^\d{10}$/.test(phone);
 const validateIdCard = (id_card: string) => /^\d{13}$/.test(id_card);
 const OnlineRegister = () => {
+    useMetadata('ลงทะเบียนออนไลน์', 'ลงทะเบียนออนไลน์');
     const [otherSpecialRights, setOtherSpecialRights] = useState(false);
     const [form, setForm] = useState(initialForm);
     const [birthDate, setBirthDate] = useState(parseDate(form.birthday));
