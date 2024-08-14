@@ -1,4 +1,5 @@
 'use client'
+
 import { parseDate } from '@internationalized/date';
 import { Checkbox, DatePicker, Input, Card, Select, SelectItem, Button } from '@nextui-org/react';
 import axios from 'axios';
@@ -7,11 +8,12 @@ import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation'; 
 import useMetadata from '@/components/hooks/useMetadata'
 const initialForm = {
-    station_name: '',
+    station_name: 'สปสช.',
+    station_code: 'NHS',
     firstname: '',
     lastname: '',
     age: '',
-    gender: '3',
+    gender: '',
     id_card: '',
     phone: '',
     disease: '',
@@ -22,7 +24,7 @@ const initialForm = {
     isallergic: '',
     sex: '',
     birthday: '2000-01-01',
-    special_rights: "ไม่ระบุ",
+    special_rights: "",
     special_rights_other: "",
     sbp:"",
     dbp:''
@@ -47,6 +49,7 @@ const OnlineRegister = () => {
     const [idCard, setIdCard] = useState('')
     const [errors, setErrors] = useState({
         station_name: '',
+        station_code: '',
         firstname: '',
         lastname: '',
         id_card: '',
@@ -168,8 +171,8 @@ const OnlineRegister = () => {
         if (!form.station_name) newErrors.station_name = 'กรุณากรอกชื่อหน่วยงาน';
         if (!form.firstname) newErrors.firstname = 'กรุณากรอกชื่อจริง';
         if (!form.lastname) newErrors.lastname = 'กรุณากรอกนามสกุล';
-        if (!form.gender || form.gender === '3') newErrors.gender = 'กรุณาเลือกเพศ'; // Validate gender selection
-        if (!form.special_rights|| form.special_rights === 'ไม่ระบุ') newErrors.special_rights = 'กรุณาเลือกสิทธิการรักษา'; // Validate special rights selection
+        if (!form.gender ) newErrors.gender = 'กรุณาเลือกเพศ'; // Validate gender selection
+        if (!form.special_rights) newErrors.special_rights = 'กรุณาเลือกสิทธิการรักษา'; // Validate special rights selection
         //if (!form.id_card || !validateIdCard(form.id_card)) newErrors.id_card = 'กรุณากรอกเลขบัตรประจำตัวประชาชนให้ถูกต้อง';
         if (!idCard) newErrors.id_card = 'กรุณากรอกเลขบัตรประจำตัวประชาชนให้ถูกต้อง';
         if (!form.phone || !validatePhone(form.phone)) newErrors.phone = 'กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง';
@@ -277,6 +280,12 @@ const OnlineRegister = () => {
         console.log(data);
 
     };
+    const renderLabelWithAsterisk = (label: string) => (
+        <span>
+          {label} <span className="text-red-500">*</span>
+        </span>
+      );
+      
 
     return (
         <Card className="w-full p-5 overflow-auto">
@@ -287,12 +296,24 @@ const OnlineRegister = () => {
                         <Input
                             name="station_name"
                             className={inputWidth}
+                            isReadOnly={true}
                             onChange={handleInputChange}
                             size="sm"
-                            label="ชื่อหน่วยงาน"
+                            label={"ชื่อหน่วยงาน"}
                             value={form.station_name}
                             isInvalid={!!errors.station_name}
                             errorMessage={errors.station_name}
+                        />
+                        <Input
+                            name="station_code"
+                            isReadOnly={true}
+                            className={inputWidth}
+                            onChange={handleInputChange}
+                            size="sm"
+                            label={"รหัสหน่วยงาน"}
+                            value={form.station_code}
+                            isInvalid={!!errors.station_code}
+                            errorMessage={errors.station_code}
                         />
                         <Input
                             name="firstname"
@@ -300,6 +321,7 @@ const OnlineRegister = () => {
                             onChange={handleInputChange}
                             size="sm"
                             label="ชื่อจริง"
+                            isRequired
                             value={form.firstname}
                             isInvalid={!!errors.firstname}
                             errorMessage={errors.firstname}
@@ -309,6 +331,7 @@ const OnlineRegister = () => {
                             className={inputWidth}
                             onChange={handleInputChange}
                             size="sm"
+                            isRequired
                             label="นามสกุล"
                             value={form.lastname}
                             isInvalid={!!errors.lastname}
@@ -319,6 +342,7 @@ const OnlineRegister = () => {
 
                         <DatePicker
                             name="birthdate"
+                            isRequired
                             size="sm"
                             label="วันเกิด"
                             variant="bordered"
@@ -354,12 +378,13 @@ const OnlineRegister = () => {
                             className={inputWidth}
                             label="เพศ"
                             placeholder="เลือกเพศ"
+                            isRequired
                             selectedKeys={[form.gender]}
                             onSelectionChange={(keys) => handleSexStatusChange(Array.from(keys) as string[])}
                             isInvalid={!!errors.gender}
                             errorMessage={errors.gender}
                         >
-                            <SelectItem key="3">ไม่ระบุ</SelectItem>
+                          
                             <SelectItem key="1">ชาย</SelectItem>
                             <SelectItem key="2">หญิง</SelectItem>
                         </Select>
@@ -372,6 +397,7 @@ const OnlineRegister = () => {
                             size="sm"
                             label="เลขบัตรประจำตัวประชาชน"
                             value={idCard}
+                            isRequired
                             isInvalid={!!errors.id_card}
                             errorMessage={errors.id_card}
                             maxLength={17}
@@ -381,6 +407,7 @@ const OnlineRegister = () => {
                             className={inputWidth}
                             onChange={handleInputChange}
                             size="sm"
+                            isRequired
                             label="เบอร์โทรศัพท์"
                             value={form.phone}
                             isInvalid={!!errors.phone}
@@ -390,6 +417,7 @@ const OnlineRegister = () => {
                         <Select
                             name="special_rights"
                             size="sm"
+                            isRequired
                             label="สิทธิการรักษา"
                             placeholder="เลือกสิทธิการรักษา"
                             className={inputWidth}
@@ -398,7 +426,7 @@ const OnlineRegister = () => {
                             isInvalid={!!errors.special_rights}
                             errorMessage={errors.special_rights}
                         >
-                            <SelectItem key={"ไม่ระบุ"}>ไม่ระบุ</SelectItem>
+                            
                             <SelectItem key="ประกันสุขภาพถ้วนหน้า/บัตรทอง">ประกันสุขภาพถ้วนหน้า/บัตรทอง</SelectItem>
                             <SelectItem key="ประกันสังคม">ประกันสังคม</SelectItem>
                             <SelectItem key="ข้าราชการ">ข้าราชการ</SelectItem>
